@@ -1,419 +1,466 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>💌 Secret Love Letters & Game 💖</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* --- First Code CSS (Letter Unlocker) --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: linear-gradient(135deg, #ffd1dc 0%, #ffe5ec 50%, #fff0f5 100%); 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Georgia', serif; 
-            min-height: 100vh; 
-            position: relative; 
-            overflow-x: hidden;
-            /* Added for the combined view to center both login and game */
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            flex-direction: column; 
-            padding: 4px;
-        }
-        .flower { 
-            position: fixed; 
-            font-size: 28px; 
-            opacity: 0; 
-            pointer-events: none; 
-            animation: flyFlower 11s infinite ease-in-out; 
-            z-index: 1; 
-            filter: drop-shadow(0 2px 4px rgba(255, 182, 193, 0.3)); 
-        }
-        @keyframes flyFlower { 
-            0% { opacity: 0; transform: translateY(0) translateX(0) rotate(0deg) scale(0.6); } 
-            8% { opacity: 0.85; } 
-            92% { opacity: 0.85; } 
-            100% { opacity: 0; transform: translateY(-105vh) translateX(70px) rotate(340deg) scale(1.1); } 
-        }
-        .card { 
-            background: white; 
-            border-radius: 32px; 
-            padding: 2.5rem 2rem; 
-            box-shadow: 0 15px 50px rgba(255, 182, 193, 0.35), 0 8px 20px rgba(255, 105, 180, 0.2); 
-            position: relative; 
-            z-index: 10; 
-            border: 3px solid rgba(255, 182, 193, 0.3); 
-            max-width: 500px; 
-            width: 100%; 
-            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-            margin: 0 auto; 
-        }
-        .card.show { animation: cardBounceIn 1s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
-        .card::before, .card::after { 
-            content: '🌸'; 
-            position: absolute; 
-            font-size: 32px; 
-            opacity: 0.6; 
-            animation: spinSlow 8s infinite ease-in-out; 
-        }
-        .card::before { top: -15px; left: -15px; }
-        .card::after { content: '💖'; bottom: -15px; right: -15px; animation-delay: 2s; }
-        @keyframes spinSlow { 
-            0%, 100% { transform: rotate(0deg) scale(1); } 
-            50% { transform: rotate(15deg) scale(1.15); } 
-        }
-        @keyframes cardBounceIn { 
-            0% { opacity: 0; transform: scale(0.5) translateY(50px) rotate(-5deg); } 
-            60% { transform: scale(1.08) translateY(-10px) rotate(2deg); } 
-            100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); } 
-        }
-        .title-heart { 
-            display: inline-block; 
-            animation: heartPulse 1.8s infinite ease-in-out; 
-            filter: drop-shadow(0 2px 8px rgba(255, 107, 157, 0.4)); 
-        }
-        @keyframes heartPulse { 
-            0%, 100% { transform: scale(1); } 
-            14% { transform: scale(1.25); } 
-            28% { transform: scale(1); } 
-            42% { transform: scale(1.15); } 
-            56% { transform: scale(1); } 
-        }
-        .input-group { position: relative; margin-bottom: 1.8rem; }
-        .cute-input { 
-            background: linear-gradient(135deg, #fffafd 0%, #fff5f9 100%); 
-            border: 3px solid #ffd6ee; 
-            border-radius: 25px; 
-            padding: 1.3rem 1.2rem 0.7rem; 
-            color: #5a3d5c; 
-            font-size: 1.05rem; 
-            width: 100%; 
-            transition: all 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-            box-shadow: 0 4px 12px rgba(255, 182, 193, 0.15); 
-        }
-        .cute-input:focus { 
-            outline: none; 
-            border-color: #ff9ecd; 
-            background: #ffffff; 
-            box-shadow: 0 8px 24px rgba(255, 182, 193, 0.35), 0 0 0 4px rgba(255, 182, 193, 0.15); 
-            transform: translateY(-3px); 
-        }
-        .cute-input::placeholder { color: transparent; }
-        .floating-label { 
-            position: absolute; 
-            left: 1.2rem; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            color: #d4a5c1; 
-            font-size: 1.05rem; 
-            pointer-events: none; 
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-            background: transparent; 
-            padding: 0 0.3rem; 
-        }
-        .cute-input:focus + .floating-label, 
-        .cute-input:not(:placeholder-shown) + .floating-label { 
-            top: -8px; 
-            font-size: 0.85rem; 
-            color: #ff6b9d; 
-            background: white; 
-            padding: 0 0.5rem; 
-            font-weight: 600; 
-        }
-        .glow-btn { 
-            background: linear-gradient(135deg, #ff7eb9 0%, #ff6b9d 50%, #ff5a8f 100%); 
-            border: none; 
-            border-radius: 30px; 
-            padding: 1.1rem 3rem; 
-            color: white; 
-            font-size: 1.15rem; 
-            font-weight: 700; 
-            cursor: pointer; 
-            transition: all 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-            box-shadow: 0 8px 24px rgba(255, 107, 157, 0.45), 0 4px 12px rgba(255, 126, 185, 0.3); 
-            position: relative; 
-            overflow: hidden; 
-            letter-spacing: 0.5px; 
-            width: 100%; 
-        }
-        .glow-btn::before { 
-            content: ''; 
-            position: absolute; 
-            top: 50%; 
-            left: 50%; 
-            width: 0; 
-            height: 0; 
-            background: rgba(255, 255, 255, 0.4); 
-            border-radius: 50%; 
-            transform: translate(-50%, -50%); 
-            transition: width 0.6s ease, height 0.6s ease; 
-        }
-        .glow-btn:hover::before { width: 350px; height: 350px; }
-        .glow-btn:hover { 
-            background: linear-gradient(135deg, #ff4d94 0%, #ff3380 50%, #ff1a6c 100%); 
-            box-shadow: 0 12px 35px rgba(255, 107, 157, 0.6), 0 6px 18px rgba(255, 126, 185, 0.4), 0 0 20px rgba(255, 126, 185, 0.5); 
-            transform: translateY(-4px) scale(1.03); 
-        }
-        .glow-btn:active { transform: translateY(-1px) scale(0.98); }
-        .back-btn { 
-            background: linear-gradient(135deg, #b8a1c4 0%, #9e8aad 100%); 
-            margin-top: 1.5rem; 
-            padding: 0.9rem 2rem; 
-            font-size: 1rem; 
-        }
-        .back-btn:hover { background: linear-gradient(135deg, #9e8aad 0%, #8b7699 100%); }
-        .letter-content { animation: letterAppear 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
-        @keyframes letterAppear { 
-            0% { opacity: 0; transform: scale(0.8) translateY(30px); } 
-            60% { transform: scale(1.05) translateY(-5px); } 
-            100% { opacity: 1; transform: scale(1) translateY(0); } 
-        }
-        .letter-header { position: relative; padding-bottom: 1.5rem; margin-bottom: 2rem; border-bottom: 2px solid #ffd6ee; }
-        .letter-header::after { 
-            content: '💌'; 
-            position: absolute; 
-            bottom: -20px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            background: white; 
-            padding: 5px 15px; 
-            border-radius: 20px; 
-            font-size: 24px; 
-            border: 2px solid #ffd6ee; 
-            box-shadow: 0 4px 12px rgba(255, 182, 193, 0.3); 
-        }
-        .poem-box { 
-            background: linear-gradient(135deg, #fef5ff 0%, #ffe9f9 100%); 
-            border: 3px dashed #ffb3d9; 
-            border-radius: 24px; 
-            padding: 1.8rem; 
-            margin-top: 2rem; 
-            position: relative; 
-            box-shadow: inset 0 2px 8px rgba(255, 182, 193, 0.15); 
-        }
-        .poem-box::before { 
-            content: '🌹'; 
-            position: absolute; 
-            top: -18px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            background: white; 
-            padding: 6px 16px; 
-            border-radius: 20px; 
-            font-size: 24px; 
-            border: 3px solid #ffb3d9; 
-            box-shadow: 0 4px 12px rgba(255, 182, 193, 0.3); 
-        }
-        .blurred { 
-            filter: blur(8px); 
-            cursor: pointer; 
-            user-select: none; 
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-            padding: 1.2rem; 
-            background: rgba(255, 255, 255, 0.6); 
-            border-radius: 16px; 
-            border: 2px dashed rgba(255, 182, 193, 0.4); 
-        }
-        .blurred:hover { 
-            filter: blur(5px); 
-            background: rgba(255, 255, 255, 0.8); 
-            transform: scale(1.02); 
-            border-color: rgba(255, 182, 193, 0.6); 
-        }
-        .blurred.revealed { 
-            filter: blur(0); 
-            cursor: default; 
-            background: transparent; 
-            border: none; 
-            animation: revealMagic 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-        }
-        @keyframes revealMagic { 
-            0% { transform: scale(0.9) rotate(-2deg); } 
-            50% { transform: scale(1.08) rotate(2deg); } 
-            100% { transform: scale(1) rotate(0deg); } 
-        }
-        .sparkle { 
-            position: fixed; 
-            pointer-events: none; 
-            font-size: 26px; 
-            animation: sparkleFloat 1.4s ease-out forwards; 
-            z-index: 100; 
-            filter: drop-shadow(0 2px 4px rgba(255, 182, 193, 0.5)); 
-        }
-        @keyframes sparkleFloat { 
-            0% { opacity: 1; transform: translate(0, 0) scale(0) rotate(0deg); } 
-            50% { transform: translate(var(--tx), var(--ty)) scale(1.4) rotate(180deg); } 
-            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3) rotate(360deg); } 
-        }
-        .text-primary { color: #5a3d5c; }
-        .text-secondary { color: #8b6f8d; }
-        .text-love { 
-            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            background-clip: text; 
-            font-weight: 700; 
-        }
-        .hint-text { 
-            color: #b89ec2; 
-            font-size: 0.9rem; 
-            animation: gentle-pulse 2s ease-in-out infinite; 
-        }
-        @keyframes gentle-pulse { 
-            0%, 100% { opacity: 0.7; } 
-            50% { opacity: 1; } 
-        }
-        .hidden { display: none; }
-        .error-shake { animation: shake 0.5s; }
-        @keyframes shake { 
-            0%, 100% { transform: translateX(0); } 
-            25% { transform: translateX(-10px); } 
-            75% { transform: translateX(10px); } 
-        }
-        @media (max-width: 640px) { 
-            .card { padding: 2rem 1.5rem; } 
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>💌 Secret Love Letters 💌</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        /* --- Second Code CSS (Game) --- */
-        #gameContainer { 
-            display: none; /* Controlled by JS */
-            align-items: center; 
-            justify-content: center; 
-            flex-direction: column; 
-            font-family: 'Comic Sans MS', cursive; /* Overrides body font for game area */
-        }
-        #gameContainer h1 { 
-            color: #ff4d6d; 
-            font-size: 28px; 
-            margin-bottom: 10px; 
-            text-shadow: 1px 1px 2px white; 
-        }
-        #gameCanvas { 
-            background: #fff; 
-            border: 5px solid #ff99b9; 
-            border-radius: 20px; 
-            box-shadow: 0 0 15px rgba(255, 182, 193, 0.7); 
-        }
-        #restartBtn { 
-            display: none; 
-            margin-top: 15px; 
-            padding: 12px 25px; 
-            font-size: 18px; 
-            background: #ffb6d9; 
-            color: #fff; 
-            border: none; 
-            border-radius: 50px; 
-            cursor: pointer; 
-            box-shadow: 0 4px #e68bb5; 
-            transition: all 0.2s; 
-        }
-        #restartBtn:hover { 
-            background: #ff99c8; 
-            box-shadow: 0 3px #cc6a9a; 
-            transform: translateY(-2px); 
-        }
-        #restartBtn:active { 
-            transform: translateY(2px); 
-            box-shadow: 0 1px #cc6a9a; 
-        }
-    </style>
+    body {
+      background: linear-gradient(135deg, #ffd1dc 0%, #ffe5ec 50%, #fff0f5 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Georgia', serif;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .flower {
+      position: fixed;
+      font-size: 28px;
+      opacity: 0;
+      pointer-events: none;
+      animation: flyFlower 11s infinite ease-in-out;
+      z-index: 1;
+      filter: drop-shadow(0 2px 4px rgba(255, 182, 193, 0.3));
+    }
+
+    @keyframes flyFlower {
+      0% { 
+        opacity: 0;
+        transform: translateY(0) translateX(0) rotate(0deg) scale(0.6);
+      }
+      8% { opacity: 0.85; }
+      92% { opacity: 0.85; }
+      100% { 
+        opacity: 0;
+        transform: translateY(-105vh) translateX(70px) rotate(340deg) scale(1.1);
+      }
+    }
+
+    .card {
+      background: white;
+      border-radius: 32px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 15px 50px rgba(255, 182, 193, 0.35),
+                  0 8px 20px rgba(255, 105, 180, 0.2);
+      position: relative;
+      z-index: 10;
+      border: 3px solid rgba(255, 182, 193, 0.3);
+      max-width: 500px;
+      width: 100%;
+      transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      margin: 0 auto;
+    }
+
+    .card.show {
+      animation: cardBounceIn 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .card::before,
+    .card::after {
+      content: '🌸';
+      position: absolute;
+      font-size: 32px;
+      opacity: 0.6;
+      animation: spinSlow 8s infinite ease-in-out;
+    }
+
+    .card::before {
+      top: -15px;
+      left: -15px;
+    }
+
+    .card::after {
+      content: '💖';
+      bottom: -15px;
+      right: -15px;
+      animation-delay: 2s;
+    }
+
+    @keyframes spinSlow {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(15deg) scale(1.15); }
+    }
+
+    @keyframes cardBounceIn {
+      0% { 
+        opacity: 0; 
+        transform: scale(0.5) translateY(50px) rotate(-5deg);
+      }
+      60% {
+        transform: scale(1.08) translateY(-10px) rotate(2deg);
+      }
+      100% { 
+        opacity: 1; 
+        transform: scale(1) translateY(0) rotate(0deg);
+      }
+    }
+
+    .title-heart {
+      display: inline-block;
+      animation: heartPulse 1.8s infinite ease-in-out;
+      filter: drop-shadow(0 2px 8px rgba(255, 107, 157, 0.4));
+    }
+
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      14% { transform: scale(1.25); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.15); }
+      56% { transform: scale(1); }
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 1.8rem;
+    }
+
+    .cute-input {
+      background: linear-gradient(135deg, #fffafd 0%, #fff5f9 100%);
+      border: 3px solid #ffd6ee;
+      border-radius: 25px;
+      padding: 1.3rem 1.2rem 0.7rem;
+      color: #5a3d5c;
+      font-size: 1.05rem;
+      width: 100%;
+      transition: all 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 4px 12px rgba(255, 182, 193, 0.15);
+    }
+
+    .cute-input:focus {
+      outline: none;
+      border-color: #ff9ecd;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(255, 182, 193, 0.35),
+                  0 0 0 4px rgba(255, 182, 193, 0.15);
+      transform: translateY(-3px);
+    }
+
+    .cute-input::placeholder {
+      color: transparent;
+    }
+
+    .floating-label {
+      position: absolute;
+      left: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #d4a5c1;
+      font-size: 1.05rem;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      background: transparent;
+      padding: 0 0.3rem;
+    }
+
+    .cute-input:focus + .floating-label,
+    .cute-input:not(:placeholder-shown) + .floating-label {
+      top: -8px;
+      font-size: 0.85rem;
+      color: #ff6b9d;
+      background: white;
+      padding: 0 0.5rem;
+      font-weight: 600;
+    }
+
+    .glow-btn {
+      background: linear-gradient(135deg, #ff7eb9 0%, #ff6b9d 50%, #ff5a8f 100%);
+      border: none;
+      border-radius: 30px;
+      padding: 1.1rem 3rem;
+      color: white;
+      font-size: 1.15rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 8px 24px rgba(255, 107, 157, 0.45),
+                  0 4px 12px rgba(255, 126, 185, 0.3);
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.5px;
+      width: 100%;
+    }
+
+    .glow-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .glow-btn:hover::before {
+      width: 350px;
+      height: 350px;
+    }
+
+    .glow-btn:hover {
+      background: linear-gradient(135deg, #ff4d94 0%, #ff3380 50%, #ff1a6c 100%);
+      box-shadow: 0 12px 35px rgba(255, 107, 157, 0.6),
+                  0 6px 18px rgba(255, 126, 185, 0.4),
+                  0 0 20px rgba(255, 126, 185, 0.5);
+      transform: translateY(-4px) scale(1.03);
+    }
+
+    .glow-btn:active {
+      transform: translateY(-1px) scale(0.98);
+    }
+
+    .back-btn {
+      background: linear-gradient(135deg, #b8a1c4 0%, #9e8aad 100%);
+      margin-top: 1.5rem;
+      padding: 0.9rem 2rem;
+      font-size: 1rem;
+    }
+
+    .back-btn:hover {
+      background: linear-gradient(135deg, #9e8aad 0%, #8b7699 100%);
+    }
+
+    .letter-content {
+      animation: letterAppear 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes letterAppear {
+      0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(30px);
+      }
+      60% {
+        transform: scale(1.05) translateY(-5px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .letter-header {
+      position: relative;
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #ffd6ee;
+    }
+
+    .letter-header::after {
+      content: '💌';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 24px;
+      border: 2px solid #ffd6ee;
+      box-shadow: 0 4px 12px rgba(255, 182, 193, 0.3);
+    }
+
+    .poem-box {
+      background: linear-gradient(135deg, #fef5ff 0%, #ffe9f9 100%);
+      border: 3px dashed #ffb3d9;
+      border-radius: 24px;
+      padding: 1.8rem;
+      margin-top: 2rem;
+      position: relative;
+      box-shadow: inset 0 2px 8px rgba(255, 182, 193, 0.15);
+    }
+
+    .poem-box::before {
+      content: '🌹';
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 24px;
+      border: 3px solid #ffb3d9;
+      box-shadow: 0 4px 12px rgba(255, 182, 193, 0.3);
+    }
+
+    .blurred {
+      filter: blur(8px);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      padding: 1.2rem;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 16px;
+      border: 2px dashed rgba(255, 182, 193, 0.4);
+    }
+
+    .blurred:hover {
+      filter: blur(5px);
+      background: rgba(255, 255, 255, 0.8);
+      transform: scale(1.02);
+      border-color: rgba(255, 182, 193, 0.6);
+    }
+
+    .blurred.revealed {
+      filter: blur(0);
+      cursor: default;
+      background: transparent;
+      border: none;
+      animation: revealMagic 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes revealMagic {
+      0% { transform: scale(0.9) rotate(-2deg); }
+      50% { transform: scale(1.08) rotate(2deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      font-size: 26px;
+      animation: sparkleFloat 1.4s ease-out forwards;
+      z-index: 100;
+      filter: drop-shadow(0 2px 4px rgba(255, 182, 193, 0.5));
+    }
+
+    @keyframes sparkleFloat {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0) rotate(0deg);
+      }
+      50% {
+        transform: translate(var(--tx), var(--ty)) scale(1.4) rotate(180deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(0.3) rotate(360deg);
+      }
+    }
+
+    .text-primary { color: #5a3d5c; }
+    .text-secondary { color: #8b6f8d; }
+    .text-love { 
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+    }
+
+    .hint-text {
+      color: #b89ec2;
+      font-size: 0.9rem;
+      animation: gentle-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes gentle-pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .error-shake {
+      animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    @media (max-width: 640px) {
+      .card { padding: 2rem 1.5rem; }
+    }
+  </style>
 </head>
-<body>
-    <div id="flowersContainer"></div>
+<body class="flex items-center justify-center min-h-screen p-4">
+  
+  <div id="flowersContainer"></div>
 
-    <div id="loginCard" class="card show">
-        <h1 class="text-4xl font-bold text-love mb-2">
-            <span class="title-heart">💖</span> Secret Letters <span class="title-heart">💖</span>
+  <!-- Login Form -->
+  <div id="loginCard" class="card show">
+    <h1 class="text-4xl font-bold text-love mb-2">
+      <span class="title-heart">💖</span> Secret Letters <span class="title-heart">💖</span>
+    </h1>
+    <p class="text-secondary mb-8 text-base">
+      Enter your name & password to unlock your personal love letter
+    </p>
+
+    <div class="input-group">
+      <input id="nameInput" type="text" class="cute-input" placeholder=" " autocomplete="off" />
+      <label class="floating-label">Your name ✨</label>
+    </div>
+
+    <div class="input-group">
+      <input id="passInput" type="password" class="cute-input" placeholder=" " />
+      <label class="floating-label">Your password 🔐</label>
+    </div>
+
+    <button onclick="showLetter()" class="glow-btn">
+      Unlock My Letter 💌
+    </button>
+
+    <p id="errorMsg" class="text-secondary text-sm mt-4 hidden"></p>
+  </div>
+
+  <!-- Letter Display -->
+  <div id="letterCard" class="card hidden">
+    <div class="letter-content">
+      <div class="letter-header">
+        <h1 class="text-3xl font-bold text-love mb-2">
+          For <span id="recipientName"></span>
         </h1>
-        <p class="text-secondary mb-8 text-base"> 
-            Enter your name & password to unlock the **game to reveal** your personal love letter 
-        </p>
-        <div class="input-group">
-            <input id="nameInput" type="text" class="cute-input" placeholder=" " autocomplete="off" />
-            <label class="floating-label">Your name ✨</label>
-        </div>
-        <div class="input-group">
-            <input id="passInput" type="password" class="cute-input" placeholder=" " />
-            <label class="floating-label">Your password 🔐</label>
-        </div>
-        <button onclick="checkLogin()" class="glow-btn"> Play to Unlock 🎮 </button>
-        <p id="errorMsg" class="text-secondary text-sm mt-4 hidden"></p>
+        <p class="text-secondary text-sm">With love 💕</p>
+      </div>
+
+      <div class="text-primary text-lg leading-relaxed whitespace-pre-line mb-6">
+        <p id="letterText"></p>
+      </div>
+
+      <div id="poemBox" class="poem-box hidden">
+        <h3 class="text-xl font-semibold text-love mb-3">A Secret Poem</h3>
+        <p id="poemText" class="text-primary whitespace-pre-line text-base leading-relaxed blurred" onclick="revealPoem(this)"></p>
+        <p id="tapHint" class="hint-text mt-3 text-center">(Tap to reveal the secret 👀✨)</p>
+      </div>
+
+      <button onclick="goBack()" class="glow-btn back-btn">
+        ← Back to Login
+      </button>
     </div>
+  </div>
 
-    <div id="gameContainer">
-        <h1>💖 Catch the Falling Hearts! 💖</h1>
-        <canvas id="gameCanvas" width="400" height="500"></canvas>
-        <button id="restartBtn">🔄 Try Again</button>
-        <button onclick="goBack()" class="glow-btn back-btn mt-4"> ← Back to Login </button>
-    </div>
+  <script>
+    function createFlowers() {
+      const container = document.getElementById('flowersContainer');
+      const flowers = ['🌸', '🌺', '🌼', '🌻', '🌷', '💐', '🏵️', '💮', '🥀'];
+      
+      for (let i = 0; i < 18; i++) {
+        const flower = document.createElement('div');
+        flower.className = 'flower';
+        flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
+        flower.style.left = Math.random() * 100 + '%';
+        flower.style.animationDelay = Math.random() * 11 + 's';
+        flower.style.animationDuration = (9 + Math.random() * 5) + 's';
+        container.appendChild(flower);
+      }
+    }
+    createFlowers();
 
-    <div id="letterCard" class="card hidden">
-        <div class="letter-content">
-            <div class="letter-header">
-                <h1 class="text-3xl font-bold text-love mb-2"> For <span id="recipientName"></span> </h1>
-                <p class="text-secondary text-sm">With love 💕</p>
-            </div>
-            <div class="text-primary text-lg leading-relaxed whitespace-pre-line mb-6">
-                <p id="letterText"></p>
-            </div>
-            <div id="poemBox" class="poem-box hidden">
-                <h3 class="text-xl font-semibold text-love mb-3">A Secret Poem</h3>
-                <p id="poemText" class="text-primary whitespace-pre-line text-base leading-relaxed blurred" onclick="revealPoem(this)"></p>
-                <p id="tapHint" class="hint-text mt-3 text-center">(Tap to reveal the secret 👀✨)</p>
-            </div>
-            <button onclick="goBack()" class="glow-btn back-btn"> ← Back to Login </button>
-        </div>
-    </div>
-
-    <script>
-        // --- Shared Setup ---
-        const loginCard = document.getElementById("loginCard");
-        const gameContainer = document.getElementById("gameContainer");
-        const letterCard = document.getElementById("letterCard");
-        const nameInput = document.getElementById("nameInput");
-        const passInput = document.getElementById("passInput");
-        const errorMsg = document.getElementById("errorMsg");
-
-        let currentRecipientName = ""; // To hold the name after successful login
-
-        // Flowers animation setup (from First Code)
-        function createFlowers() {
-            const container = document.getElementById('flowersContainer');
-            const flowers = ['🌸', '🌺', '🌼', '🌻', '🌷', '💐', '🏵️', '💮', '🥀'];
-            for (let i = 0; i < 18; i++) {
-                const flower = document.createElement('div');
-                flower.className = 'flower';
-                flower.textContent = flowers[Math.floor(Math.random() * flowers.length)];
-                flower.style.left = Math.random() * 100 + '%';
-                flower.style.animationDelay = Math.random() * 11 + 's';
-                flower.style.animationDuration = (9 + Math.random() * 5) + 's';
-                container.appendChild(flower);
-            }
-        }
-        createFlowers();
-
-        // Sparkle effect (from First Code)
-        function createSparkles(x, y) {
-            const sparkles = ['✨', '💫', '⭐', '🌟', '💖', '💕', '💗', '🌸'];
-            for (let i = 0; i < 12; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle';
-                sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-                const angle = (i / 12) * Math.PI * 2;
-                const distance = 70 + Math.random() * 50;
-                sparkle.style.left = x + 'px';
-                sparkle.style.top = y + 'px';
-                sparkle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
-                sparkle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
-                document.body.appendChild(sparkle);
-                setTimeout(() => sparkle.remove(), 1400);
-            }
-        }
-
-        // Letter data (from First Code)
-        const letters = {
-            "Hani": { pass: "hani123", text: "Dear Hani,\n\nYour kindness is like soft sunlight on a tired day. You remind me that even in chaos, there is peace when I think of you.\n\nWith warmth,\nYour Secret Admirer 🌸" },
+    const letters = {
+      "Hani": { pass: "hani123", text: "Dear Hani,\n\nYour kindness is like soft sunlight on a tired day. You remind me that even in chaos, there is peace when I think of you.\n\nWith warmth,\nYour Secret Admirer 🌸" },
             "Teha": { 
     pass: "teha123", 
     text: `Dear Teha,
@@ -580,232 +627,108 @@ You are proof that even in this noisy world, gentleness still holds power. You m
 Forever,  
 Your Secret Admirer 🌸`
 },
+    };
 
-        };
-        const poems = {
-            "Teha": "Not every star shines in the sky 🌌,\nSome are hidden where no one can spy 👀,\nIf you ever wonder who I write of late ✍️,\nTeha, just know… it's you I can't state 💕 (shhh 🤫).",
-            "Ainul": "Some words are loud, some never said 🔒,\nSome live in dreams inside my head 🌙,\nIf secrets could whisper, they'd spell your name 🌸,\nAinul, the hidden spark I can't tame 🔥 (don't tell).",
-        };
+    const poems = {
+      "Teha": `Not every star shines in the sky 🌌,
+Some are hidden where no one can spy 👀,
+If you ever wonder who I write of late ✍️,
+Teha, just know… it's you I can't state 💕 (shhh 🤫).`,
 
-        // --- Navigation Functions (Modified) ---
-        function checkLogin() {
-            const name = nameInput.value.trim();
-            const pass = passInput.value.trim();
-            const fixedName = Object.keys(letters).find(n => n.toLowerCase() === name.toLowerCase());
+      "Ainul": `Some words are loud, some never said 🔒,
+Some live in dreams inside my head 🌙,
+If secrets could whisper, they'd spell your name 🌸,
+Ainul, the hidden spark I can't tame 🔥 (don't tell).`,
+    };
 
-            if (fixedName && letters[fixedName].pass === pass) {
-                currentRecipientName = fixedName; // Store the name
-                const rect = loginCard.getBoundingClientRect();
-                createSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
-                
-                // Transition to Game View
-                setTimeout(() => {
-                    loginCard.classList.add("hidden");
-                    gameContainer.style.display = "flex";
-                    // Initialize and start the game
-                    initGame();
-                }, 400);
-                errorMsg.classList.add("hidden");
-            } else {
-                errorMsg.textContent = "❌ Wrong name or password. Try again!";
-                errorMsg.classList.remove("hidden");
-                loginCard.classList.add("error-shake");
-                setTimeout(() => loginCard.classList.remove("error-shake"), 500);
-            }
+    function createSparkles(x, y) {
+      const sparkles = ['✨', '💫', '⭐', '🌟', '💖', '💕', '💗', '🌸'];
+      for (let i = 0; i < 12; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+        const angle = (i / 12) * Math.PI * 2;
+        const distance = 70 + Math.random() * 50;
+        sparkle.style.left = x + 'px';
+        sparkle.style.top = y + 'px';
+        sparkle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+        sparkle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 1400);
+      }
+    }
+
+    function showLetter() {
+      const name = document.getElementById("nameInput").value.trim();
+      const pass = document.getElementById("passInput").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
+      const loginCard = document.getElementById("loginCard");
+      const letterCard = document.getElementById("letterCard");
+
+      const fixedName = Object.keys(letters).find(n => n.toLowerCase() === name.toLowerCase());
+
+      if (fixedName && letters[fixedName].pass === pass) {
+        const rect = loginCard.getBoundingClientRect();
+        createSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+
+        document.getElementById("recipientName").textContent = fixedName;
+        document.getElementById("letterText").textContent = letters[fixedName].text;
+
+        if (poems[fixedName]) {
+          document.getElementById("poemText").textContent = poems[fixedName];
+          document.getElementById("poemText").classList.remove("revealed");
+          document.getElementById("poemText").classList.add("blurred");
+          document.getElementById("poemBox").classList.remove("hidden");
+          document.getElementById("tapHint").classList.remove("hidden");
+        } else {
+          document.getElementById("poemBox").classList.add("hidden");
         }
 
-        function showLetter() {
-            // This function is now called by the game upon successful score
-            const fixedName = currentRecipientName;
+        setTimeout(() => {
+          loginCard.classList.add("hidden");
+          letterCard.classList.remove("hidden");
+          letterCard.classList.add("show");
+        }, 400);
 
-            document.getElementById("recipientName").textContent = fixedName;
-            document.getElementById("letterText").textContent = letters[fixedName].text;
-            
-            if (poems[fixedName]) {
-                document.getElementById("poemText").textContent = poems[fixedName];
-                document.getElementById("poemText").classList.remove("revealed");
-                document.getElementById("poemText").classList.add("blurred");
-                document.getElementById("poemBox").classList.remove("hidden");
-                document.getElementById("tapHint").classList.remove("hidden");
-            } else {
-                document.getElementById("poemBox").classList.add("hidden");
-            }
-            
-            // Transition from Game to Letter View
-            gameContainer.style.display = "none";
-            letterCard.classList.remove("hidden");
-            letterCard.classList.add("show");
+        errorMsg.classList.add("hidden");
+      } else {
+        errorMsg.textContent = "❌ Wrong name or password. Try again!";
+        errorMsg.classList.remove("hidden");
+        loginCard.classList.add("error-shake");
+        setTimeout(() => loginCard.classList.remove("error-shake"), 500);
+      }
+    }
 
-            // Stop the game loop
-            cancelAnimationFrame(gameLoopId);
-            gameLoopId = null;
-        }
+    function revealPoem(el) {
+      if (!el.classList.contains('revealed')) {
+        el.classList.add("revealed");
+        document.getElementById("tapHint").classList.add("hidden");
+        
+        const rect = el.getBoundingClientRect();
+        createSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      }
+    }
 
-        function revealPoem(el) {
-            if (!el.classList.contains('revealed')) {
-                el.classList.add("revealed");
-                document.getElementById("tapHint").classList.add("hidden");
-                const rect = el.getBoundingClientRect();
-                createSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
-            }
-        }
+    function goBack() {
+      const loginCard = document.getElementById("loginCard");
+      const letterCard = document.getElementById("letterCard");
+      
+      letterCard.classList.add("hidden");
+      loginCard.classList.remove("hidden");
+      loginCard.classList.add("show");
+      
+      document.getElementById("nameInput").value = "";
+      document.getElementById("passInput").value = "";
+      document.getElementById("errorMsg").classList.add("hidden");
+    }
 
-        function goBack() {
-            // Stop the game if it was running
-            if (gameLoopId) {
-                cancelAnimationFrame(gameLoopId);
-                gameLoopId = null;
-                clearInterval(heartIntervalId);
-                heartIntervalId = null;
-            }
+    document.getElementById('passInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') showLetter();
+    });
 
-            // Reset Game & Letter views
-            gameContainer.style.display = "none";
-            letterCard.classList.add("hidden");
-
-            // Show Login View
-            loginCard.classList.remove("hidden");
-            loginCard.classList.add("show");
-            nameInput.value = "";
-            passInput.value = "";
-            errorMsg.classList.add("hidden");
-        }
-
-        // Input handlers for login (from First Code)
-        passInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') checkLogin();
-        });
-        nameInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') passInput.focus();
-        });
-
-        // --- Second Code JS (Heart Catch Game) ---
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
-        const restartBtn = document.getElementById("restartBtn");
-        let basket, hearts, score, gameOver;
-        let gameLoopId = null;
-        let heartIntervalId = null;
-        const WIN_SCORE = 5; // Target score
-
-        function initGame() {
-            basket = { x: 160, y: 450, width: 80, height: 25, speed: 6 };
-            hearts = [];
-            score = 0;
-            gameOver = false;
-            restartBtn.style.display = "none";
-
-            // Clear any old intervals
-            if (heartIntervalId) clearInterval(heartIntervalId);
-            heartIntervalId = setInterval(spawnHeart, 1500);
-
-            // Start the game loop if not running
-            if (!gameLoopId) gameLoop();
-        }
-
-        let keys = {};
-        // Add event listeners only once
-        if (!document.gameListenersAdded) {
-            document.addEventListener("keydown", e => keys[e.key] = true);
-            document.addEventListener("keyup", e => keys[e.key] = false);
-            document.gameListenersAdded = true;
-        }
-
-        function spawnHeart() {
-            if (!gameOver) {
-                let x = Math.random() * (canvas.width - 20);
-                hearts.push({ x, y: 0, size: 20, speed: 1.2 + Math.random() * 0.6 });
-            }
-        }
-
-        function drawHeart(x, y, size) {
-            ctx.beginPath();
-            // Complex heart shape drawing logic
-            ctx.moveTo(x, y);
-            ctx.bezierCurveTo(x, y - size / 2, x - size, y - size / 2, x - size, y);
-            ctx.bezierCurveTo(x - size, y + size / 2, x, y + size, x, y + size * 1.5);
-            ctx.bezierCurveTo(x, y + size, x + size, y + size / 2, x + size, y);
-            ctx.bezierCurveTo(x + size, y - size / 2, x, y - size / 2, x, y);
-            ctx.fillStyle = "#ff4d6d";
-            ctx.shadowColor = "rgba(255, 100, 150, 0.7)";
-            ctx.shadowBlur = 15;
-            ctx.fill();
-            ctx.shadowBlur = 0; // reset glow
-        }
-
-        function update() {
-            if (gameOver) return;
-
-            // Basket movement
-            if (keys["ArrowLeft"] && basket.x > 0) basket.x -= basket.speed;
-            if (keys["ArrowRight"] && basket.x < canvas.width - basket.width) basket.x += basket.speed;
-
-            // Heart logic
-            for (let i = hearts.length - 1; i >= 0; i--) {
-                let h = hearts[i];
-                h.y += h.speed + (score * 0.02);
-
-                // Check for catch (collision with basket)
-                if (h.y + h.size > basket.y && h.x > basket.x && h.x < basket.x + basket.width) {
-                    score++;
-                    hearts.splice(i, 1);
-                    
-                    if (score >= WIN_SCORE) {
-                        gameOver = true;
-                        clearInterval(heartIntervalId);
-                        const rect = canvas.getBoundingClientRect();
-                        createSparkles(rect.left + rect.width / 2, rect.top + rect.height / 2);
-                        setTimeout(showLetter, 500); // Wait a moment then show letter
-                    }
-                } 
-                // Check for miss (game over)
-                else if (h.y > canvas.height) {
-                    gameOver = true;
-                    clearInterval(heartIntervalId);
-                    restartBtn.style.display = "block";
-                }
-            }
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw basket (cute rounded style)
-            ctx.fillStyle = "#ff99c8";
-            ctx.beginPath();
-            // Use roundRect if available, otherwise fallback (simple rect for compatibility)
-            if (ctx.roundRect) {
-                ctx.roundRect(basket.x, basket.y, basket.width, basket.height, 12);
-            } else {
-                ctx.rect(basket.x, basket.y, basket.width, basket.height);
-            }
-            ctx.fill();
-
-            // Draw hearts
-            hearts.forEach(h => drawHeart(h.x, h.y, h.size));
-
-            // Draw score
-            ctx.fillStyle = "#ff4d6d";
-            ctx.font = "22px Comic Sans MS";
-            ctx.fillText("Score: " + score + " / " + WIN_SCORE, 10, 30);
-
-            if (gameOver && score < WIN_SCORE) {
-                ctx.fillStyle = "#ff4d6d";
-                ctx.font = "28px Comic Sans MS";
-                ctx.fillText("Game Over 💔", 110, 250);
-            }
-        }
-
-        function gameLoop() {
-            update();
-            draw();
-            gameLoopId = requestAnimationFrame(gameLoop);
-        }
-
-        restartBtn.addEventListener("click", () => {
-            initGame();
-        });
-
-    </script>
+    document.getElementById('nameInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') document.getElementById('passInput').focus();
+    });
+  </script>
 </body>
 </html>
